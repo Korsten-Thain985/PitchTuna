@@ -2,7 +2,7 @@
   <div class="pitch-detector q-pa-md">
     <!-- Header -->
     <div class="header q-mb-lg">
-      <div class="text-h5 text-weight-bold"> Pitch Training</div>
+      <div class="text-h5 text-weight-bold">🎵 Pitch Training</div>
       <div class="text-subtitle2 text-grey-7">Real-time pitch detection with professional accuracy</div>
     </div>
 
@@ -30,43 +30,68 @@
 
     <!-- Target Selection -->
     <div class="target-section q-mb-lg">
-      <div class="text-subtitle1 q-mb-sm"> Target Note</div>
-      <div class="row q-col-gutter-sm">
-        <div class="col-8">
-          <q-select
-            v-model="targetNote"
-            :options="noteOptions"
-            label="Select target note"
+      <div class="text-subtitle1 q-mb-sm">🎯 Target Note</div>
+      
+      <!-- Custom Note Input -->
+      <div class="row q-col-gutter-sm q-mb-sm">
+        <div class="col-6">
+          <q-input
+            v-model="customNote"
+            label="Enter note (e.g., C4, D#4)"
             outlined
             dense
-            emit-value
-            map-options
-            option-label="label"
-            option-value="value"
+            @keyup.enter="applyCustomNote"
+          >
+            <template v-slot:append>
+              <q-icon name="music_note" />
+            </template>
+          </q-input>
+        </div>
+        <div class="col-3">
+          <q-btn
+            color="primary"
+            label="Set Note"
+            @click="applyCustomNote"
+            class="full-width full-height"
           />
         </div>
-        <div class="col-4">
+        <div class="col-3">
           <q-btn
             color="secondary"
             label="Random"
+            icon="casino"
             @click="selectRandomNote"
             outline
-            class="full-height"
+            class="full-width full-height"
           />
         </div>
       </div>
       
-      <div class="target-display q-pa-lg text-center bg-blue-1 rounded-borders q-mt-sm">
+      <!-- Target Display -->
+      <div class="target-display q-pa-lg text-center bg-blue-1 rounded-borders">
         <div class="text-h2 text-weight-bold text-primary">{{ targetNote }}</div>
-        <div class="text-caption text-grey-7">
+        <div class="text-caption text-grey-7 q-mb-md">
           {{ targetPitch.toFixed(2) }} Hz • MIDI: {{ targetMidi }}
         </div>
+        
+        <!-- Play Target Note Button -->
+        <q-btn
+          color="positive"
+          :label="isPlayingNote ? 'Playing...' : 'Play Target Note'"
+          icon="volume_up"
+          @click="playTargetNote"
+          :loading="isPlayingNote"
+          :disable="isPlayingNote"
+          size="md"
+          rounded
+          class="q-mt-sm"
+        />
       </div>
     </div>
 
     <!-- Current Pitch Display -->
     <div class="current-pitch-section q-mb-lg">
-      <div class="text-subtitle1 q-mb-sm"> Current Detection</div>
+      <div class="text-subtitle1 q-mb-sm">📊 Current Detection</div>
       
       <q-card class="current-pitch-card">
         <q-card-section class="text-center">
@@ -179,6 +204,7 @@
             v-if="currentAttempt"
             color="primary"
             label="Save Attempt"
+            icon="save"
             @click="saveAttempt"
             class="full-width"
             size="lg"
@@ -193,6 +219,7 @@
             v-if="currentAttempt"
             color="grey"
             label="Clear"
+            icon="clear"
             @click="clearAttempt"
             outline
             class="full-width"
@@ -216,7 +243,7 @@
       <div v-if="showSettings" class="settings-section q-mb-lg">
         <q-card>
           <q-card-section>
-            <div class="text-subtitle2 q-mb-sm">Detection Settings</div>
+            <div class="text-subtitle2 q-mb-sm">⚙️ Detection Settings</div>
             <div class="row q-col-gutter-sm">
               <div class="col-6">
                 <q-select
@@ -258,7 +285,8 @@
         <div class="text-subtitle2">📋 How to use:</div>
         <ol class="q-pl-md q-mb-none">
           <li>Enter your name</li>
-          <li>Select a target note or use "Random"</li>
+          <li>Type a target note (like C4, D#4) or use "Random"</li>
+          <li>Click "Play Target Note" to hear the target</li>
           <li>Click "Start Listening"</li>
           <li>Sing or play the target note</li>
           <li>Try to match the green zone (±{{ successThreshold }} cents)</li>
@@ -274,13 +302,17 @@ import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useAttemptsStore } from '@/stores/attempts'
 import { pitchDetector } from '@/services/PitchDetectionService'
 import { Note, Midi } from '@tonaljs/tonal'
+import * as Tone from 'tone'
+import { Notify } from 'quasar'
 
 const attemptsStore = useAttemptsStore()
 
 // State
 const targetNote = ref('C4')
+const customNote = ref('C4')
 const isListening = ref(false)
 const isInitializing = ref(false)
+const isPlayingNote = ref(false)
 const currentPitch = ref(null)
 const timer = ref(0)
 const startTime = ref(0)
@@ -291,9 +323,42 @@ const detectorType = ref('yin')
 const autoSave = ref(false)
 const successThreshold = ref(20)
 
+// Tone.js Synth
+let synth = null
+
+// Initialize Tone.js
+onMounted(() => {
+  synth = new Tone.Synth({
+    oscillator: {
+      type: 'sine'
+    },
+    envelope: {
+      attack: 0.1,
+      decay: 0.2,
+      sustain: 0.5,
+      release: 0.8
+    }
+  }).toDestination()
+
+  // Lade Testdaten wenn keine vorhanden
+  if (attemptsStore.attempts.length === 0) {
+    attemptsStore.loadTestData()
+  }
+})
+
+// Cleanup
+onUnmounted(() => {
+  if (isListening.value) {
+    stopListening()
+  }
+  if (synth) {
+    synth.dispose()
+  }
+})
+
 // Note Options
 const noteOptions = computed(() => {
-  return pitchDetector.getAllNotesInRange('A3', 'G4').map(note => ({
+  return pitchDetector.getAllNotesInRange('A3', 'G5').map(note => ({
     label: `${note.name} (${note.frequency.toFixed(1)} Hz)`,
     value: note.name
   }))
@@ -353,6 +418,79 @@ const currentAttempt = computed(() => {
 })
 
 // Methods
+async function playTargetNote() {
+  if (!synth || isPlayingNote.value) return
+  
+  try {
+    isPlayingNote.value = true
+    
+    // Start Tone.js context if not started
+    if (Tone.context.state !== 'running') {
+      await Tone.start()
+    }
+    
+    // Play the note for 2 seconds
+    synth.triggerAttackRelease(targetNote.value, '2n')
+    
+    Notify.create({
+      message: `Playing ${targetNote.value}`,
+      color: 'positive',
+      icon: 'volume_up',
+      position: 'top',
+      timeout: 2000
+    })
+    
+    // Reset playing state after note finishes
+    setTimeout(() => {
+      isPlayingNote.value = false
+    }, 2000)
+    
+  } catch (error) {
+    console.error('Error playing note:', error)
+    isPlayingNote.value = false
+    Notify.create({
+      message: 'Error playing note',
+      color: 'negative',
+      icon: 'error'
+    })
+  }
+}
+
+function applyCustomNote() {
+  const upperNote = customNote.value.toUpperCase().trim()
+  
+  // Validate note format (e.g., C4, D#4, Eb5)
+  const noteRegex = /^[A-G][#b]?\d$/
+  
+  if (noteRegex.test(upperNote)) {
+    targetNote.value = upperNote
+    Notify.create({
+      message: `Target note set to ${upperNote}`,
+      color: 'positive',
+      icon: 'check'
+    })
+  } else {
+    Notify.create({
+      message: 'Invalid note format. Please use format like C4, D#4, Eb5',
+      color: 'negative',
+      icon: 'error'
+    })
+  }
+}
+
+function selectRandomNote() {
+  const notes = noteOptions.value
+  const randomIndex = Math.floor(Math.random() * notes.length)
+  targetNote.value = notes[randomIndex].value
+  customNote.value = notes[randomIndex].value
+  
+  Notify.create({
+    message: `Random note: ${targetNote.value}`,
+    color: 'info',
+    icon: 'casino'
+  })
+}
+
 async function toggleListening() {
   if (isListening.value) {
     stopListening()
@@ -390,9 +528,19 @@ async function startListening() {
     isListening.value = true
     isInitializing.value = false
     
+    Notify.create({
+      message: 'Microphone active - Start singing!',
+      color: 'positive',
+      icon: 'mic'
+    })
+    
   } catch (error) {
     console.error('Failed to start listening:', error)
-    alert('Could not access microphone. Please check permissions and try again.')
+    Notify.create({
+      message: 'Could not access microphone. Please check permissions.',
+      color: 'negative',
+      icon: 'error'
+    })
     isInitializing.value = false
   }
 }
@@ -408,11 +556,21 @@ function stopListening() {
   }
   
   isListening.value = false
+  
+  Notify.create({
+    message: 'Microphone stopped',
+    color: 'info',
+    icon: 'stop'
+  })
 }
 
 function saveAttempt() {
   if (!currentAttempt.value) {
-    alert('No pitch detected to save.')
+    Notify.create({
+      message: 'No pitch detected to save',
+      color: 'warning',
+      icon: 'warning'
+    })
     return
   }
   
@@ -420,9 +578,19 @@ function saveAttempt() {
   
   // Erfolgsmeldung
   if (attempt.success) {
-    showSuccessMessage('🎉 Perfect! Attempt saved successfully.')
+    Notify.create({
+      message: '🎉 Perfect! Attempt saved successfully.',
+      color: 'positive',
+      icon: 'check_circle',
+      position: 'top'
+    })
   } else {
-    showSuccessMessage('Attempt saved. Keep practicing!')
+    Notify.create({
+      message: 'Attempt saved. Keep practicing!',
+      color: 'info',
+      icon: 'save',
+      position: 'top'
+    })
   }
   
   // Reset für nächsten Versuch
@@ -435,34 +603,9 @@ function clearAttempt() {
   startTime.value = 0
 }
 
-function selectRandomNote() {
-  const notes = noteOptions.value
-  const randomIndex = Math.floor(Math.random() * notes.length)
-  targetNote.value = notes[randomIndex].value
-}
-
 function updateUserName(name) {
   attemptsStore.updateUserProfile({ name })
 }
-
-function showSuccessMessage(message) {
-  // Hier könntest du eine schönere Notification einbauen
-  alert(message)
-}
-
-// Lifecycle Hooks
-onMounted(() => {
-  // Lade Testdaten wenn keine vorhanden
-  if (attemptsStore.attempts.length === 0) {
-    attemptsStore.loadTestData()
-  }
-})
-
-onUnmounted(() => {
-  if (isListening.value) {
-    stopListening()
-  }
-})
 </script>
 
 <style scoped>
