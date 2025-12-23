@@ -1,12 +1,9 @@
 <template>
   <div class="pitch-detector q-pa-md">
-    <!-- Header -->
     <div class="header q-mb-lg">
       <div class="text-lemon text-h5 text-weight-bold">Pitch Training</div>
       <div class="text-subtitle2 text-grey-7">Real-time pitch detection with professional accuracy</div>
     </div>
-
-    <!-- User Profile -->
     <q-card class="q-mb-md">
       <q-card-section class="q-pa-sm">
         <div class="row items-center">
@@ -27,12 +24,9 @@
         </div>
       </q-card-section>
     </q-card>
-
-    <!-- Target Selection -->
     <div class="target-section q-mb-lg">
       <div class="text-lemon text-subtitle1 q-mb-sm"> Target Note</div>
-      
-      <!-- Custom Note Input -->
+
       <div class="row q-col-gutter-sm q-mb-sm">
         <div class="col-6">
           <q-input
@@ -57,7 +51,7 @@
         </div>
         <div class="col-3">
           <q-btn
-            color="secondary"
+            color="primary"
             label="Random"
             icon="casino"
             @click="selectRandomNote"
@@ -67,14 +61,12 @@
         </div>
       </div>
       
-      <!-- Target Display -->
       <div class="target-display q-pa-lg text-center bg-blue-1 rounded-borders">
         <div class="text-lemon text-h2 text-weight-bold text-primary">{{ targetNote }}</div>
         <div class="text-lemon text-caption text-grey-7 q-mb-md">
           {{ targetPitch.toFixed(2) }} Hz • MIDI: {{ targetMidi }}
         </div>
         
-        <!-- Play Target Note Button -->
         <q-btn
           color="positive"
           :label="isPlayingNote ? 'Playing...' : 'Play Target Note'"
@@ -89,14 +81,13 @@
       </div>
     </div>
 
-    <!-- Current Pitch Display -->
+
     <div class="current-pitch-section q-mb-lg">
       <div class="text-subtitle1 q-mb-sm text-lemon "> Current Detection</div>
       
       <q-card class="current-pitch-card">
         <q-card-section class="text-center">
           <template v-if="isListening && currentPitch">
-            <!-- Note Anzeige -->
             <div class="note-display q-mb-md">
               <div class="text-h1 text-weight-bold">{{ currentPitch.note || '--' }}</div>
               <div class="text-h6 text-grey-7">
@@ -107,7 +98,7 @@
               </div>
             </div>
             
-            <!-- Deviation Anzeige -->
+
             <div class="deviation-display q-mb-md">
               <div class="text-h5 q-mb-sm">
                 Deviation: 
@@ -134,7 +125,6 @@
               </div>
             </div>
             
-            <!-- Note Vergleich -->
             <div class="note-comparison q-mb-md">
               <div class="row items-center justify-center">
                 <div class="col-5 text-right">
@@ -227,7 +217,7 @@
         </div>
         <div class="col">
           <q-btn
-            color="secondary"
+            color="primary"
             label="Settings"
             @click="showSettings = !showSettings"
             icon="settings"

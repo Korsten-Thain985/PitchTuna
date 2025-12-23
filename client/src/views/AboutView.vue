@@ -10,3 +10,7 @@
     </div>
 
 </template>
+<script setup>
+
+    console.log('Thorsten Kain')
+</script>

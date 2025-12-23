@@ -3,7 +3,11 @@
     <q-header elevated class="bg-dark text-white">
       <q-toolbar>
         <q-btn dense flat round icon="menu" @click="left = !left" />
-        <q-toolbar-title class="text-lemon">PitchTuna</q-toolbar-title>
+        <q-toolbar-title class="text-lemon">
+         <q-avatar size="32px" class="q-mr-sm">
+      <img src="/PitchTuna.png">
+    </q-avatar>
+          PitchTuna</q-toolbar-title>
       </q-toolbar>
     </q-header>
 

@@ -42,7 +42,7 @@
             <!-- Quick Stats -->
             <q-card class="quick-stats-card q-mb-lg">
               <q-card-section>
-                <div class="text-h6 q-mb-md">Deine Versuche </div>
+                <div class="text-lemon text-h6 q-mb-md">Deine Versuche </div>
                 
                 <template v-if="hasAttempts">
                   <div class="row q-col-gutter-md">
@@ -89,7 +89,7 @@
             <q-card class="recent-attempts-card">
               <q-card-section>
                 <div class="row items-center justify-between q-mb-md">
-                  <div class="text-h6">letzte Versuche</div>
+                  <div class="text-lemon text-h6">letzte Versuche</div>
                   <q-badge color="primary" :label="`${attemptsStore.attempts.length} total`" />
                 </div>
                 
@@ -111,7 +111,7 @@
 
             
         <div class="quick-actions q-mt-xl text-center">
-          <div class="text-h5 q-mb-md">Ready to improve your pitch?</div>
+          <div class="text-h5 q-mb-md ">Bereit deine Stimme zu Verbessern ? </div>
           <div class="row justify-center q-col-gutter-md">
             <div class="col-auto">
               <q-btn
