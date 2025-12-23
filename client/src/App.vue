@@ -21,7 +21,11 @@
     </q-drawer>
 
     <q-page-container>
-      <router-view />
+      <q-page class="q-pa-md">
+        <div class="page-content">
+          <router-view />
+        </div>
+      </q-page>
     </q-page-container>
   </q-layout>
 </template>
@@ -36,5 +40,19 @@ const left = ref(false)
   font-family: 'LemonMilk', sans-serif;
   font-weight: 700;
   letter-spacing: 0.5px;
+}
+
+/* Container für bessere Strukturierung */
+.page-content {
+  max-width: 1200rem;
+  margin: 0 auto;
+  width: 100%;
+}
+
+/* Responsive: auf kleineren Bildschirmen volle Breite */
+@media (max-width: 768rem) {
+  .page-content {
+    max-width: 100%;
+  }
 }
 </style>

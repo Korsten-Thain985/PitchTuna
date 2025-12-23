@@ -2,7 +2,7 @@
   <div class="pitch-detector q-pa-md">
     <!-- Header -->
     <div class="header q-mb-lg">
-      <div class="text-h5 text-weight-bold">🎵 Pitch Training</div>
+      <div class="text-lemon text-h5 text-weight-bold">Pitch Training</div>
       <div class="text-subtitle2 text-grey-7">Real-time pitch detection with professional accuracy</div>
     </div>
 
@@ -30,7 +30,7 @@
 
     <!-- Target Selection -->
     <div class="target-section q-mb-lg">
-      <div class="text-subtitle1 q-mb-sm">🎯 Target Note</div>
+      <div class="text-lemon text-subtitle1 q-mb-sm"> Target Note</div>
       
       <!-- Custom Note Input -->
       <div class="row q-col-gutter-sm q-mb-sm">
@@ -69,8 +69,8 @@
       
       <!-- Target Display -->
       <div class="target-display q-pa-lg text-center bg-blue-1 rounded-borders">
-        <div class="text-h2 text-weight-bold text-primary">{{ targetNote }}</div>
-        <div class="text-caption text-grey-7 q-mb-md">
+        <div class="text-lemon text-h2 text-weight-bold text-primary">{{ targetNote }}</div>
+        <div class="text-lemon text-caption text-grey-7 q-mb-md">
           {{ targetPitch.toFixed(2) }} Hz • MIDI: {{ targetMidi }}
         </div>
         
@@ -91,7 +91,7 @@
 
     <!-- Current Pitch Display -->
     <div class="current-pitch-section q-mb-lg">
-      <div class="text-subtitle1 q-mb-sm">📊 Current Detection</div>
+      <div class="text-subtitle1 q-mb-sm text-lemon "> Current Detection</div>
       
       <q-card class="current-pitch-card">
         <q-card-section class="text-center">
@@ -243,7 +243,7 @@
       <div v-if="showSettings" class="settings-section q-mb-lg">
         <q-card>
           <q-card-section>
-            <div class="text-subtitle2 q-mb-sm">⚙️ Detection Settings</div>
+            <div class="text-subtitle2 q-mb-sm text-lemon"> Detection Settings</div>
             <div class="row q-col-gutter-sm">
               <div class="col-6">
                 <q-select
@@ -280,20 +280,20 @@
     </q-slide-transition>
 
     <!-- Instructions -->
-    <q-card>
-      <q-card-section>
-        <div class="text-subtitle2">📋 How to use:</div>
-        <ol class="q-pl-md q-mb-none">
-          <li>Enter your name</li>
-          <li>Type a target note (like C4, D#4) or use "Random"</li>
-          <li>Click "Play Target Note" to hear the target</li>
-          <li>Click "Start Listening"</li>
-          <li>Sing or play the target note</li>
-          <li>Try to match the green zone (±{{ successThreshold }} cents)</li>
-          <li>Click "Save Attempt" to record your progress</li>
-        </ol>
-      </q-card-section>
-    </q-card>
+<q-card>
+  <q-card-section>
+    <div class="text-lemon text-subtitle2"> Anleitung:</div>
+    <ol class="q-pl-md q-mb-none">
+      <li>Gib deinen Namen ein</li>
+      <li>Gib einen Zielton ein (z.B. C4, D#4) oder wähle "Zufall"</li>
+      <li>Klicke "Zielton abspielen", um den Ton zu hören</li>
+      <li>Klicke "Aufnahme starten"</li>
+      <li>Singe oder spiele den Zielton</li>
+      <li>Versuche, die grüne Zone zu treffen (±{{ successThreshold }} Cent)</li>
+      <li>Klicke "Versuch speichern", um deinen Fortschritt zu speichern</li>
+    </ol>
+  </q-card-section>
+</q-card>
   </div>
 </template>
 
@@ -637,5 +637,11 @@ function updateUserName(name) {
 
 .settings-section {
   transition: all 0.3s ease;
+}
+
+.text-lemon {
+  font-family: 'LemonMilk', sans-serif;
+  font-weight: 700;
+  letter-spacing: 0.5px;
 }
 </style>

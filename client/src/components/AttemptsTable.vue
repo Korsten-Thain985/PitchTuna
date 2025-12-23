@@ -7,7 +7,6 @@
     </div>
     
     <div v-else>
-      <!-- Letzte 5 Versuche anzeigen -->
       <div class="attempts-list">
         <div v-for="attempt in recentAttempts" :key="attempt.attemptId" class="attempt-item q-pa-sm">
           <div class="row items-center justify-between">

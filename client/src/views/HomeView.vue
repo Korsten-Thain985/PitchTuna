@@ -1,37 +1,5 @@
 <template>
   <q-page class="home-view">
-    <!-- Hero Section -->
-    <div class="hero-section text-center q-pa-lg text-white">
-      <div class="hero-content">
-        <q-icon name="music_note" size="80px" class="q-mb-md" />
-        <div class="text-h3 text-weight-bold q-mb-sm animate-pop">PitchTuna</div>
-        <div class="text-h6 q-mb-lg opacity-80">Trainiere deine Stimme</div>
-        
-        <div class="hero-stats row justify-center q-col-gutter-md q-mb-lg">
-          <q-chip color="white" text-color="primary" icon="mic">
-            Real-time Detection
-          </q-chip>
-          <q-chip color="white" text-color="primary" icon="trending_up">
-            Progress Tracking
-          </q-chip>
-          <q-chip color="white" text-color="primary" icon="smartphone">
-            Mobile PWA
-          </q-chip>
-        </div>
-        
-        <q-btn
-          v-if="!hasAttempts"
-          color="white"
-          text-color="primary"
-          label="Get Started"
-          icon-right="arrow_forward"
-          size="lg"
-          @click="scrollToTraining"
-          class="q-mb-xl"
-        />
-      </div>
-    </div>
-
     <!-- Main Content -->
     <div class="content-section q-pa-lg">
       <div class="container"> 
@@ -60,7 +28,7 @@
           <!-- Left Column: Pitch Detector -->
           <div class="col-12 col-lg-7">
             <div class="section-header q-mb-md" id="training-section">
-              <div class="text-h4 text-weight-bold"> Live Pitch Training</div>
+              <div class="text-lemon text-h4 text-weight-bold"> Live Pitch Training</div>
               <div class="text-subtitle1 text-grey-7">
                 Verwende dein Microphon um dich einzustimmen
               </div>
@@ -154,68 +122,7 @@
                 @click="scrollToTraining"
               />
             </div>
-            <div class="col-auto">
-              <q-btn
-                color="secondary"
-                label="View Statistics"
-                icon="analytics"
-                size="lg"
-                outline
-                @click="scrollToStats"
-              />
-            </div>
-            <div class="col-auto">
-              <q-btn
-                color="positive"
-                label="Test Random Note"
-                icon="shuffle"
-                size="lg"
-                outline
-                @click="testRandomNote"
-              />
-            </div>
           </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Footer Section -->
-    <div class="footer-section text-center q-pa-lg bg-grey-2">
-      <div class="container">
-        <div class="text-h6 q-mb-sm">🎵 Pitch Perfect Pro</div>
-        <div class="text-caption text-grey-7 q-mb-md">
-          Your personal pitch training assistant • v1.0.0
-        </div>
-        
-        <div class="row justify-center q-col-gutter-md q-mb-md">
-          <div class="col-auto">
-            <q-btn
-              round
-              color="primary"
-              icon="home"
-              :to="{ name: 'home' }"
-            />
-          </div>
-          <div class="col-auto">
-            <q-btn
-              round
-              color="secondary"
-              icon="info"
-              :to="{ name: 'about' }"
-            />
-          </div>
-          <div class="col-auto">
-            <q-btn
-              round
-              color="positive"
-              icon="share"
-              @click="shareApp"
-            />
-          </div>
-        </div>
-        
-        <div class="text-caption text-grey-6">
-          Works best with Chrome on Android/iOS • Requires microphone access
         </div>
       </div>
     </div>
@@ -333,3 +240,12 @@ onMounted(() => {
   }
 })
 </script>
+<style scoped>
+.text-lemon {
+  font-family: 'LemonMilk', sans-serif;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+
+</style>
