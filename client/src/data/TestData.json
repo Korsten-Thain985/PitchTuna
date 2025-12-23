@@ -1,0 +1,49 @@
+[
+  {
+    "attemptId": 1,
+    "userName": "Zhang",
+    "userID": "Zhang",
+    "targetNote": "C4",
+    "targetPitch": 261.63,
+    "achievedPitch": 261.50,
+    "deviationHz": -0.13,
+    "deviationCent": -0.9,
+    "timeToHitMs": 3200,
+    "success": true
+  },
+  {
+    "attemptId": 2,
+    "userName": "Patrick",
+    "userID": "Patrick",
+    "targetNote": "G4",
+    "targetPitch": 392.00,
+    "achievedPitch": 390.10,
+    "deviationHz": -1.90,
+    "deviationCent": -8.4,
+    "timeToHitMs": 5100,
+    "success": false
+  },
+  {
+    "attemptId": 3,
+    "userName": "Tom",
+    "userID": "Tom",
+    "targetNote": "A3",
+    "targetPitch": 220.00,
+    "achievedPitch": 220.05,
+    "deviationHz": 0.05,
+    "deviationCent": 0.4,
+    "timeToHitMs": 1800,
+    "success": true
+  },
+  {
+    "attemptId": 4,
+    "userName": "Mia",
+    "targetNote": "F#4",
+    "targetPitch": 369.99,
+    "achievedPitch": 370.20,
+    "deviationHz": 0.21,
+    "deviationCent": 1.0,
+    "timeToHitMs": 2700,
+    "success": true
+  }
+]
