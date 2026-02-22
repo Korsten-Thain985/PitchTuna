@@ -1,0 +1,33 @@
+{
+  "name": "server-templ-vitest",
+  "version": "1.0.1",
+  "description": "A simple server with PostgreSQL integration and setup for supertest",
+  "main": "app.js",
+  "type": "module",
+  "scripts": {
+    "dev": "set MODE=development && nodemon src/app.js",
+    "start": "set MODE=production && set DEBUG=startup && node src/app.js",
+    "lint": "eslint . --ext .js"
+  },
+  "keywords": [
+    "express",
+    "postgres"
+  ],
+  "author": "Thomas Psik",
+  "license": "ISC",
+  "dependencies": {
+    "colors": "^1.4.0",
+    "cors": "^2.8.6",
+    "dotenv": "^17.2.3",
+    "express": "^5.2.1",
+    "express-async-handler": "^1.2.0",
+    "morgan": "^1.10.1",
+    "pg": "^8.17.2"
+  },
+  "devDependencies": {
+    "eslint": "^8.57.1",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-plugin-import": "^2.32.0",
+    "nodemon": "^3.1.11"
+  }
+}
