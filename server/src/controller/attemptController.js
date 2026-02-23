@@ -3,93 +3,55 @@ import * as AttemptModel from '../model/attemptModel.js';
 import * as UserModel from '../model/userModel.js';
 
 // eslint-disable-next-line import/prefer-default-export
-export async function getAttempts(req, res) {
-  try {
-    log('getAttempts for user %s', req.params.id);
-    const attempts = await AttemptModel.findAllByUser(req.params.id);
-    res.json(attempts);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: 'Failed to fetch attempts' });
-  }
-}
+export const getAttempts = asyncHandler(async (req, res) => {
+  res.json(await AttemptModel.findAllByUser(req.params.id));
+});
 
-// GET /api/attempts/:attemptId
-export async function getAttempt(req, res) {
-  try {
-    log('getAttempt %s', req.params.attemptId);
-    const attempt = await AttemptModel.findById(req.params.attemptId);
-    if (!attempt) return res.status(404).json({ error: 'Attempt not found' });
-    res.json(attempt);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: 'Failed to fetch attempt' });
-  }
-}
+export const getAttempt = asyncHandler(async (req, res) => {
+  const attempt = await AttemptModel.findById(req.params.attemptId);
+  if (!attempt) throw Object.assign(new Error('Attempt not found'), { status: 404 });
+  res.json(attempt);
+});
 
-// POST /api/users/:id/attempts
-export async function createAttempt(req, res) {
-  try {
-    const { id } = req.params;
-    const data = req.body;
+export const getAllAttempts = asyncHandler(async (req, res) => {
+  res.json(await AttemptModel.getAll());
+});
 
-    // Validate required fields
-    const required = ['userName', 'targetNote', 'targetPitch', 'achievedPitch',
-                      'deviationHz', 'deviationCent', 'timeToHitMs', 'success'];
-    const missing = required.filter(f => data[f] === undefined);
-    if (missing.length) {
-      return res.status(400).json({ error: `Missing fields: ${missing.join(', ')}` });
-    }
+export const createAttempt = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  const data = req.body;
 
-    // Auto-create user if they don't exist yet
-    const user = await UserModel.findById(id);
-    if (!user) {
-      await UserModel.upsert({ id, name: data.userName });
-    }
+  const required = ['userName', 'targetNote', 'targetPitch', 'achievedPitch',
+                    'deviationHz', 'deviationCent', 'timeToHitMs', 'success'];
+  const missing = required.filter(f => data[f] === undefined);
 
-    log('createAttempt for user %s note %s', id, data.targetNote);
-    const attempt = await AttemptModel.create(id, data);
-    res.status(201).json(attempt);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: 'Failed to create attempt' });
-  }
-}
+  if (missing.length) throw Object.assign(new Error(`Fehlende Felder: ${missing.join(', ')}`), { status: 400 });
+  if (data.timeToHitMs < 0) throw Object.assign(new Error('timeToHitMs darf nicht negativ sein'), { status: 400 });
 
-// DELETE /api/attempts/:attemptId
-export async function deleteAttempt(req, res) {
-  try {
-    log('deleteAttempt %s', req.params.attemptId);
-    const deleted = await AttemptModel.remove(req.params.attemptId);
-    if (!deleted) return res.status(404).json({ error: 'Attempt not found' });
-    res.status(204).end();
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: 'Failed to delete attempt' });
-  }
-}
+  if (!await UserModel.findById(id)) await UserModel.upsert(id, data.userName);
 
-// DELETE /api/users/:id/attempts
-export async function deleteAllAttempts(req, res) {
-  try {
-    log('deleteAllAttempts for user %s', req.params.id);
-    const count = await AttemptModel.removeAllByUser(req.params.id);
-    res.json({ deleted: count });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: 'Failed to delete attempts' });
-  }
-}
+  res.status(201).json(await AttemptModel.create(id, data));
+});
 
-// GET /api/users/:id/stats
-export async function getStats(req, res) {
-  try {
-    log('getStats for user %s', req.params.id);
-    const stats = await AttemptModel.getStatsByUser(req.params.id);
-    res.json(stats);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: 'Failed to compute stats' });
-  }
-}
+export const deleteAttempt = asyncHandler(async (req, res) => {
+  const deleted = await AttemptModel.remove(req.params.attemptId);
+  if (!deleted) throw Object.assign(new Error('Attempt not found'), { status: 404 });
+  res.json(deleted);
+});
 
+export const deleteAllAttempts = asyncHandler(async (req, res) => {
+  res.json(await AttemptModel.removeAllByUser(req.params.id));
+});
+
+export const getStats = asyncHandler(async (req, res) => {
+  const s = await AttemptModel.getStatsByUser(req.params.id);
+  const total = +s.total_attempts;
+
+  res.json({
+    totalAttempts: total,
+    todayAttempts: +s.today_attempts,
+    successRate: total ? ((+s.successful / total) * 100).toFixed(1) : '0.0',
+    avgDeviationCent: +s.avg_deviation_cent || 0,
+    avgTimeToHit: +s.avg_time_to_hit || 0
+  });
+});

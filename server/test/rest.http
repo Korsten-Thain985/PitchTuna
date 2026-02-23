@@ -1,1 +1,69 @@
 GET http://localhost:3000/test
+
+###
+
+GET http://localhost:3000/api/users
+
+###
+
+POST http://localhost:3000/api/users
+Content-Type: application/json
+
+{
+  "name": "Omaygott",
+  "preferredRange": "C4-C6"
+}
+
+###
+
+GET http://localhost:3000/api/users/user_patrick_001
+
+###
+
+PUT http://localhost:3000/api/users/1
+Content-Type: application/json
+
+{
+  "name": "Test User",
+  "preferredRange": "A3-A5"
+}
+
+###
+
+GET http://localhost:3000/api/users/1/attempts
+
+###
+
+POST http://localhost:3000/api/users/1/attempts
+Content-Type: application/json
+
+{
+  "userName": "John Doe",
+  "targetNote": "A4",
+  "targetPitch": 440.0,
+  "achievedPitch": 441.0,
+  "deviationHz": 1.0,
+  "deviationCent": 4.0,
+  "timeToHitMs": 1500,
+  "success": true
+}
+
+###
+
+DELETE http://localhost:3000/api/users/1/attempts
+
+###
+
+GET http://localhost:3000/api/users/1/stats
+
+###
+
+GET http://localhost:3000/api/attempts
+
+###
+
+GET http://localhost:3000/api/attempts/1
+
+###
+
+DELETE http://localhost:3000/api/attempts/1
