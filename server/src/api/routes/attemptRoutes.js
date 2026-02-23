@@ -1,8 +1,10 @@
 import express from 'express';
-import { getTest } from '../../controller/testController.js';
+import { getAttempt, deleteAttempt } from '../../controller/attemptController.js';
 
 const router = express.Router();
 
-router.get('/', getTest);
+// ── Single attempt (by attemptId) ─────────────────────────────────────────────
+router.get(   '/api/attempts/:attemptId', getAttempt);
+router.delete('/api/attempts/:attemptId', deleteAttempt);
 
 export default router;
