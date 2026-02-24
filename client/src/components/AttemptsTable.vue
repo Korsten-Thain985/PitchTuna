@@ -56,8 +56,8 @@
 </template>
 
 <script setup>
-import { computed } from 'vue'
-import { useAttemptsStore } from '@/stores/attempts'
+import { computed, onMounted } from 'vue'
+import { useAttemptsServerStore } from '@/stores/attemptsServer'
 
 const props = defineProps({
   limit: {
@@ -66,7 +66,13 @@ const props = defineProps({
   }
 })
 
-const store = useAttemptsStore()
+const store = useAttemptsServerStore()
+
+onMounted(() => {
+  if (!store.attempts || store.attempts.length === 0) {
+    store.fetchAll().catch(() => {})
+  }
+})
 
 // Direkt auf store.attempts zugreifen
 const attempts = computed(() => store.attempts)
@@ -79,6 +85,20 @@ const displayedAttempts = computed(() => {
 })
 
 const columns = [
+  {
+    name: 'attemptId',
+    label: 'Attempt ID',
+    field: 'attemptId',
+    align: 'left',
+    sortable: true
+  },
+  {
+    name: 'userID',
+    label: 'User ID',
+    field: 'userID',
+    align: 'left',
+    sortable: true
+  },
   {
     name: 'targetNote',
     label: 'Note',
@@ -128,7 +148,7 @@ function getDeviationClass(value) {
 }
 
 function deleteAttempt(id) {
-  store.deleteAttempt(id)
+  store.deleteAttempt(id).catch(() => {})
 }
 </script>
 

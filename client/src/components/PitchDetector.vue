@@ -289,13 +289,13 @@
 
 <script setup>
 import { ref, computed, onMounted, onUnmounted } from 'vue'
-import { useAttemptsStore } from '@/stores/attempts'
+import { useAttemptsServerStore } from '@/stores/attemptsServer'
 import { pitchDetector } from '@/services/PitchDetectionService'
 import { Note, Midi } from '@tonaljs/tonal'
 import * as Tone from 'tone'
 import { Notify } from 'quasar'
 
-const attemptsStore = useAttemptsStore()
+const attemptsStore = useAttemptsServerStore()
 
 // State
 const targetNote = ref('C4')
@@ -330,10 +330,8 @@ onMounted(() => {
     }
   }).toDestination()
 
-  // Lade Testdaten wenn keine vorhanden
-  if (attemptsStore.attempts.length === 0) {
-    attemptsStore.loadTestData()
-  }
+  // Load attempts from server (fallback to persisted local data already loaded in store)
+  attemptsStore.fetchAll().catch(() => {})
 })
 
 // Cleanup
@@ -564,7 +562,28 @@ function saveAttempt() {
     return
   }
   
-  const attempt = attemptsStore.addAttempt(currentAttempt.value)
+  // create attempt on server (uses store.userProfile.id if no userId passed)
+  attemptsStore.createAttempt(undefined, currentAttempt.value, userName.value)
+    .then((attempt) => {
+      if (attempt.success) {
+        Notify.create({
+          message: '🎉 Perfect! Attempt saved successfully.',
+          color: 'positive',
+          icon: 'check_circle',
+          position: 'top'
+        })
+      } else {
+        Notify.create({
+          message: 'Attempt saved. Keep practicing!',
+          color: 'info',
+          icon: 'save',
+          position: 'top'
+        })
+      }
+    })
+    .catch(() => {
+      Notify.create({ message: 'Failed to save attempt', color: 'negative' })
+    })
   
   // Erfolgsmeldung
   if (attempt.success) {

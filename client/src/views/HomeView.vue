@@ -132,12 +132,12 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import { useQuasar } from 'quasar'
-import { useAttemptsStore } from '@/stores/attempts'
+import { useAttemptsServerStore } from '@/stores/attemptsServer'
 import PitchDetector from '@/components/PitchDetector.vue'
 import AttemptsTable from '@/components/AttemptsTable.vue'
 
 const $q = useQuasar()
-const attemptsStore = useAttemptsStore()
+const attemptsStore = useAttemptsServerStore()
 const pitchDetector = ref(null)
 
 // Computed Properties
@@ -238,6 +238,8 @@ onMounted(() => {
       })
     }, 1000)
   }
+    // load latest attempts from server
+    attemptsStore.fetchAll().catch(() => {})
 })
 </script>
 <style scoped>
