@@ -11,10 +11,25 @@ export class PitchDetectionService {
       ...options
     }
     
+    // Mehrere Detektoren für bessere Ergebnisse
+    this.detectors = {
+      yin: YIN({
+        minFrequency: this.options.minFrequency,
+        maxFrequency: this.options.maxFrequency,
+        probabilityThreshold: this.options.probabilityThreshold,
+        sampleRate: this.options.sampleRate
+      }),
+      amdf: AMDF({
+        minFrequency: this.options.minFrequency,
+        maxFrequency: this.options.maxFrequency,
+        sampleRate: this.options.sampleRate
+      })
+    }
+    
     this.audioContext = null
     this.analyser = null
     this.source = null
-    this.workletNode = null
+    this.processor = null  // BACK TO SCRIPTPROCESSOR - more reliable than AudioWorklet
     this.isRunning = false
     this.currentDetector = 'yin'
   }
@@ -49,20 +64,10 @@ export class PitchDetectionService {
       // Verbinden
       this.source.connect(this.analyser)
       
-      // AudioWorklet laden und erstellen
-      await this.audioContext.audioWorklet.addModule(new URL('../worklets/pitch-processor.js', import.meta.url))
-      this.workletNode = new AudioWorkletNode(this.audioContext, 'pitch-processor')
-      
-      // Analyser mit Worklet verbinden
-      this.analyser.connect(this.workletNode)
-      this.workletNode.connect(this.audioContext.destination)
-      
-      // Worklet konfigurieren
-      this.workletNode.port.postMessage({
-        type: 'setDetector',
-        detectorName: this.currentDetector,
-        options: this.options
-      })
+      // Script Processor für Echtzeit-Verarbeitung (RELIABLE APPROACH)
+      this.processor = this.audioContext.createScriptProcessor(4096, 1, 1)
+      this.analyser.connect(this.processor)
+      this.processor.connect(this.audioContext.destination)
       
       this.isRunning = true
       return true
@@ -73,13 +78,22 @@ export class PitchDetectionService {
   }
 
   startDetection(onPitchDetected) {
-    if (!this.workletNode || !this.isRunning) {
+    if (!this.processor || !this.isRunning) {
       throw new Error('Service not initialized')
     }
     
-    this.workletNode.port.onmessage = (event) => {
-      const { frequency } = event.data
-      if (frequency) {
+    const bufferLength = this.analyser.fftSize
+    const timeDomainBuffer = new Float32Array(bufferLength)
+    
+    this.processor.onaudioprocess = () => {
+      // Zeitbereichsdaten abrufen
+      this.analyser.getFloatTimeDomainData(timeDomainBuffer)
+      
+      // Pitch erkennen
+      const detector = this.detectors[this.currentDetector]
+      const frequency = detector(timeDomainBuffer)
+      
+      if (frequency && frequency >= this.options.minFrequency && frequency <= this.options.maxFrequency) {
         const pitchData = this.analyzeFrequency(frequency)
         onPitchDetected(pitchData)
       }
@@ -169,9 +183,9 @@ export class PitchDetectionService {
   }
 
   stop() {
-    if (this.workletNode) {
-      this.workletNode.disconnect()
-      this.workletNode.port.onmessage = null
+    if (this.processor) {
+      this.processor.disconnect()
+      this.processor.onaudioprocess = null
     }
     if (this.source) {
       this.source.disconnect()
@@ -183,15 +197,8 @@ export class PitchDetectionService {
   }
 
   setDetector(detectorName) {
-    if (detectorName === 'yin' || detectorName === 'amdf') {
+    if (this.detectors[detectorName]) {
       this.currentDetector = detectorName
-      if (this.workletNode) {
-        this.workletNode.port.postMessage({
-          type: 'setDetector',
-          detectorName,
-          options: this.options
-        })
-      }
     }
   }
 }

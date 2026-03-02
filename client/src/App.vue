@@ -21,15 +21,17 @@
           <q-item-section avatar><q-icon name="info" /></q-item-section>
           <q-item-section>About</q-item-section>
         </q-item>
+        <q-item v-ripple to="/attempts" exact clickable>
+          <q-item-section avatar><q-icon name="history" /></q-item-section>
+          <q-item-section>Attempts</q-item-section>
+        </q-item>
       </q-list>
     </q-drawer>
 
     <q-page-container>
-      <q-page class="q-pa-md">
-        <div class="page-content">
-          <router-view />
-        </div>
-      </q-page>
+      <div class="page-content q-pa-md">
+        <router-view />
+      </div>
     </q-page-container>
   </q-layout>
 </template>

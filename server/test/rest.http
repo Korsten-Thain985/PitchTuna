@@ -24,7 +24,7 @@ PUT http://localhost:3000/api/users/1
 Content-Type: application/json
 
 {
-  "name": "Test User",
+  "name": "Skibidi User User",
   "preferredRange": "A3-A5"
 }
 

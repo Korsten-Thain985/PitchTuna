@@ -1,16 +1,15 @@
 <template>
   <div class="attempts-table">
-    <!-- Tabelle nur anzeigen, wenn attempts vorhanden sind -->
     <div v-if="attempts.length > 0">
       <q-table
-        :rows="displayedAttempts"
+        :rows="attempts"
         :columns="columns"
         row-key="attemptId"
         flat
         bordered
         dense
-        hide-pagination
-        :pagination="{ rowsPerPage: limit || 50 }"
+        v-model:pagination="pagination"
+        :rows-per-page-options="[5, 10, 25, 50]"
       >
         <template v-slot:body-cell-success="props">
           <q-td :props="props">
@@ -42,11 +41,8 @@
           </q-td>
         </template>
       </q-table>
-      
-      <!-- "View All" Button entfernen, da wir bereits alle anzeigen -->
     </div>
     
-    <!-- Leerer State -->
     <div v-else class="empty-state text-center q-pa-lg">
       <q-icon name="history" size="60px" color="grey-4" class="q-mb-md" />
       <div class="text-h6">No attempts yet</div>
@@ -56,13 +52,13 @@
 </template>
 
 <script setup>
-import { computed, onMounted } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { useAttemptsServerStore } from '@/stores/attemptsServer'
 
 const props = defineProps({
   limit: {
     type: Number,
-    default: 0 // 0 means no limit
+    default: 0
   }
 })
 
@@ -74,45 +70,22 @@ onMounted(() => {
   }
 })
 
-// Direkt auf store.attempts zugreifen
-const attempts = computed(() => store.attempts)
+const attempts = computed(() => {
+  if (props.limit > 0) return store.attempts.slice(0, props.limit)
+  return store.attempts
+})
 
-const displayedAttempts = computed(() => {
-  if (props.limit > 0) {
-    return attempts.value.slice(0, props.limit)
-  }
-  return attempts.value
+const pagination = ref({
+  rowsPerPage: 10,
+  page: 1
 })
 
 const columns = [
-  {
-    name: 'attemptId',
-    label: 'Attempt ID',
-    field: 'attemptId',
-    align: 'left',
-    sortable: true
-  },
-  {
-    name: 'userID',
-    label: 'User ID',
-    field: 'userID',
-    align: 'left',
-    sortable: true
-  },
-  {
-    name: 'targetNote',
-    label: 'Note',
-    field: 'targetNote',
-    align: 'left',
-    sortable: true
-  },
-  {
-    name: 'deviationCent',
-    label: 'Deviation',
-    field: 'deviationCent',
-    align: 'center',
-    sortable: true
-  },
+  { name: 'attemptId',     label: 'Attempt ID', field: 'attemptId',     align: 'left',   sortable: true },
+  { name: 'userID',        label: 'User ID',    field: 'userID',        align: 'left',   sortable: true },
+  { name: 'userName',      label: 'User Name',  field: 'userName',      align: 'left',   sortable: true },
+  { name: 'targetNote',    label: 'Note',       field: 'targetNote',    align: 'left',   sortable: true },
+  { name: 'deviationCent', label: 'Deviation',  field: 'deviationCent', align: 'center', sortable: true },
   {
     name: 'timeToHitMs',
     label: 'Time',
@@ -120,12 +93,7 @@ const columns = [
     align: 'center',
     sortable: true
   },
-  {
-    name: 'success',
-    label: 'Result',
-    field: 'success',
-    align: 'center'
-  },
+  { name: 'success',   label: 'Result', field: 'success',   align: 'center' },
   {
     name: 'timestamp',
     label: 'Date',
@@ -133,11 +101,7 @@ const columns = [
     align: 'right',
     sortable: true
   },
-  {
-    name: 'actions',
-    label: '',
-    align: 'right'
-  }
+  { name: 'actions', label: '', align: 'right' }
 ]
 
 function getDeviationClass(value) {
@@ -155,12 +119,6 @@ function deleteAttempt(id) {
 <style scoped>
 .attempts-table {
   min-height: 200px;
-}
-
-.text-lemon {
-  font-family: 'LemonMilk', sans-serif;
-  font-weight: 700;
-  letter-spacing: 0.5px;
 }
 .empty-state {
   opacity: 0.7;

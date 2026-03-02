@@ -580,30 +580,12 @@ function saveAttempt() {
           position: 'top'
         })
       }
+
+      clearAttempt()
     })
     .catch(() => {
       Notify.create({ message: 'Failed to save attempt', color: 'negative' })
     })
-  
-  // Erfolgsmeldung
-  if (attempt.success) {
-    Notify.create({
-      message: '🎉 Perfect! Attempt saved successfully.',
-      color: 'positive',
-      icon: 'check_circle',
-      position: 'top'
-    })
-  } else {
-    Notify.create({
-      message: 'Attempt saved. Keep practicing!',
-      color: 'info',
-      icon: 'save',
-      position: 'top'
-    })
-  }
-  
-  // Reset für nächsten Versuch
-  clearAttempt()
 }
 
 function clearAttempt() {
