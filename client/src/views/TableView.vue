@@ -79,7 +79,7 @@
                 <q-badge color="primary" :label="`${attemptsStore.attempts.length} total`" />
               </div>
               
-              <AttemptsTable v-if="hasAttempts" :limit="5" />
+              <AttemptsTable v-if="hasAttempts" />
               
               <div v-else class="text-center q-pa-lg">
                 <q-icon name="history" size="60px" color="grey-4" />
