@@ -86,7 +86,7 @@ export default defineConfig({
       manifest: {
         name: 'PitchTuna - Pitch Training App',
         short_name: 'PitchTuna',
-        description: 'Professional pitch training with real-time detection',
+        description: 'Live Pitch Trainer PWA-App',
         theme_color: '#00C2A3',
         background_color: '#F8F9FA',
         display: 'standalone',
