@@ -2,7 +2,7 @@
 -- PostgreSQL database dump
 --
 
-\restrict RdzO8jugjUlkUszkdBVe8Ys02mONzObBk7NW8VT6on1zSTjtKWoEsQLZqYQE0d9
+\restrict aoNn2lYj2kLYESYJuY0ugec7xGAxeRPvDE47rE1e0H9ZHRDFoT6uHfXa7ROehOT
 
 -- Dumped from database version 18.0
 -- Dumped by pg_dump version 18.0
@@ -111,6 +111,7 @@ COPY public.attempts (attempt_id, user_id, user_name, target_note, target_pitch,
 16	user_mia_003	Mia	D4	293.6600	286.0000	-7.6600	-45.2000	11200	f	0.1900	C#4	2026-02-21 16:15:00.452849+01
 18	user_mia_003	Mia	F4	349.2300	349.5000	0.2700	1.3000	3100	t	0.8900	F4	2026-02-23 16:15:00.452849+01
 20	user_1770723735045	Lukas	C4	261.6256	104.3476	-157.2779	8.6734	24716	t	0.8608	Ab2	2026-03-03 12:08:09.150972+01
+21	user_1773735823943	User	C4	261.6256	136.7379	-124.8876	-23.3081	14802	f	0.6272	Db3	2026-03-17 09:24:29.770621+01
 \.
 
 
@@ -125,6 +126,7 @@ user_mia_003	Mia	E3-B5	2026-02-23 16:15:00.425875+01
 user_omaygott_1771927240169	Omaygott	C4-C6	2026-02-24 11:00:40.173041+01
 1	Test User	A3-A5	2026-02-24 11:00:47.115918+01
 user_1770723735045	Lukas	C3-G5	2026-03-03 12:08:09.142865+01
+user_1773735823943	User	C3-G5	2026-03-17 09:24:29.764406+01
 \.
 
 
@@ -132,7 +134,7 @@ user_1770723735045	Lukas	C3-G5	2026-03-03 12:08:09.142865+01
 -- Name: attempts_attempt_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.attempts_attempt_id_seq', 20, true);
+SELECT pg_catalog.setval('public.attempts_attempt_id_seq', 21, true);
 
 
 --
@@ -177,5 +179,5 @@ ALTER TABLE ONLY public.attempts
 -- PostgreSQL database dump complete
 --
 
-\unrestrict RdzO8jugjUlkUszkdBVe8Ys02mONzObBk7NW8VT6on1zSTjtKWoEsQLZqYQE0d9
+\unrestrict aoNn2lYj2kLYESYJuY0ugec7xGAxeRPvDE47rE1e0H9ZHRDFoT6uHfXa7ROehOT
 
