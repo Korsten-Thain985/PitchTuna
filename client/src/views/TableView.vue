@@ -4,7 +4,7 @@
     <div class="content-section q-pa-lg">
       
 
-      <!-- Centered Stats & Attempts -->
+ 
       <div class="row justify-center">
         <div class="col-12 col-md-8 col-lg-6">
 
@@ -133,7 +133,7 @@ const quickStats = computed(() => {
     {
       label: 'Today',
       value: attemptsStore.stats.todayAttempts.toString(),
-      color: 'text-secondary'
+      color: 'text-dark'
     }
   ]
 })

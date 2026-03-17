@@ -1,9 +1,9 @@
 <template>
   <div class="pitch-detector q-pa-md">
-    <div class="header q-mb-lg">
+    <!-- <div class="header q-mb-lg">
       <div class="text-lemon text-h5 text-weight-bold">Pitch Training</div>
       <div class="text-subtitle2 text-grey-7">Real-time pitch detection with professional accuracy</div>
-    </div>
+    </div> -->
     <q-card class="q-mb-md">
       <q-card-section class="q-pa-sm">
         <div class="row items-center">
@@ -28,7 +28,7 @@
       <div class="text-lemon text-subtitle1 q-mb-sm"> Target Note</div>
 
       <div class="row q-col-gutter-sm q-mb-sm">
-        <div class="col-6">
+        <div class="col-xs-12 col-sm-6">
           <q-input
             v-model="customNote"
             label="Enter note (e.g., C4, D#4)"
@@ -41,7 +41,7 @@
             </template>
           </q-input>
         </div>
-        <div class="col-3">
+        <div class="col-xs-6 col-sm-3">
           <q-btn
             color="primary"
             label="Set Note"
@@ -49,7 +49,7 @@
             class="full-width full-height"
           />
         </div>
-        <div class="col-3">
+        <div class="col-xs-6 col-sm-3">
           <q-btn
             color="primary"
             label="Random"
@@ -61,7 +61,7 @@
         </div>
       </div>
       
-      <div class="target-display q-pa-lg text-center bg-blue-1 rounded-borders">
+      <div class="target-display q-pa-lg text-center rounded-borders">
         <div class="text-lemon text-h2 text-weight-bold text-primary">{{ targetNote }}</div>
         <div class="text-lemon text-caption text-grey-7 q-mb-md">
           {{ targetPitch.toFixed(2) }} Hz • MIDI: {{ targetMidi }}
@@ -127,18 +127,18 @@
             
             <div class="note-comparison q-mb-md">
               <div class="row items-center justify-center">
-                <div class="col-5 text-right">
+                <div class="col-xs-12 col-sm-5 text-right">
                   <div class="text-h6">Target:</div>
                   <div class="text-h4 text-weight-bold">{{ targetNote }}</div>
                 </div>
-                <div class="col-2 text-center">
+                <div class="col-xs-12 col-sm-2 text-center q-mt-sm q-mt-sm-sm0">
                   <q-icon 
                     :name="deviationIcon" 
                     :color="deviationColor" 
                     size="xl"
                   />
                 </div>
-                <div class="col-5 text-left">
+                <div class="col-xs-12 col-sm-5 text-left">
                   <div class="text-h6">You:</div>
                   <div class="text-h4 text-weight-bold">{{ currentPitch.note || '--' }}</div>
                 </div>
@@ -178,7 +178,7 @@
     <!-- Controls -->
     <div class="controls-section q-mb-lg">
       <div class="row q-col-gutter-sm">
-        <div class="col">
+        <div class="col-xs-12 col-sm-6">
           <q-btn
             :color="isListening ? 'negative' : 'positive'"
             :icon="isListening ? 'stop' : 'mic'"
@@ -189,7 +189,7 @@
             :loading="isInitializing"
           />
         </div>
-        <div class="col">
+        <div class="col-xs-12 col-sm-6">
           <q-btn
             v-if="currentAttempt"
             color="primary"
@@ -204,7 +204,7 @@
       </div>
       
       <div class="row q-col-gutter-sm q-mt-sm">
-        <div class="col">
+        <div class="col-xs-12 col-sm-6">
           <q-btn
             v-if="currentAttempt"
             color="grey"
@@ -215,7 +215,7 @@
             class="full-width"
           />
         </div>
-        <div class="col">
+        <div class="col-xs-12 col-sm-6">
           <q-btn
             color="primary"
             label="Settings"
@@ -603,15 +603,16 @@ function updateUserName(name) {
 .pitch-detector {
   max-width: 600px;
   margin: 0 auto;
+  width: 100%;
 }
 
 .target-display {
-  border: 2px solid #2196f3;
-  background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+  border: 2px solid var(--q-primary);
+  background-color: var(--q-secondary);
 }
 
 .current-pitch-card {
-  border: 2px solid #e0e0e0;
+  border: 2px solid var(--q-secondary);
   min-height: 300px;
   display: flex;
   flex-direction: column;

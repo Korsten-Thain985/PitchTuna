@@ -1,29 +1,5 @@
 <template>
-  <q-page class="home-view">
-    <!-- Main Content -->
-    <div class="content-section q-pa-lg">
-      <div class="container"> 
-
-        <q-slide-transition>
-          <q-card v-if="!hasAttempts" class="welcome-card q-mb-xl">
-            <q-card-section>
-              <div class="row items-center">
-                <div class="col-auto">
-                  <q-avatar color="primary" text-color="white" icon="waving_hand" />
-                </div>
-                <div class="col">
-                  <div class="text-h6">Welcome to Pitch Perfect Pro!</div>
-                  <div class="text-caption">
-                    Start by selecting a target note and clicking "Start Listening"
-                  </div>
-                </div>
-              </div>
-            </q-card-section>
-          </q-card>
-        </q-slide-transition>
-      </div>
-      </div>
-
+  <q-page class="home-view">  
         <div class="row justify-center">
           <div class="col-12 col-lg-7">
             <div class="section-header q-mb-md" id="training-section">
@@ -32,10 +8,12 @@
                 Verwende dein Microphon um dich einzustimmen
               </div>
             </div>
-            
-            <PitchDetector ref="pitchDetector" />
+
+              <PitchDetector ref="pitchDetector" />
+          
           </div>
         </div>
+          
   </q-page>
 </template>
 
