@@ -3,8 +3,8 @@ import { getAllAttempts, getAttempt, deleteAttempt } from '../../controller/atte
 
 const router = express.Router();
 
-router.get(   '/api/attempts',           getAllAttempts);
-router.get(   '/api/attempts/:attemptId', getAttempt);
+router.get('/api/attempts', getAllAttempts);
+router.get('/api/attempts/:attemptId', getAttempt);
 router.delete('/api/attempts/:attemptId', deleteAttempt);
 
 export default router;

@@ -21,9 +21,8 @@ export const createAttempt = asyncHandler(async (req, res) => {
   const { id } = req.params;
   const data = req.body;
 
-  const required = ['userName', 'targetNote', 'targetPitch', 'achievedPitch',
-                    'deviationHz', 'deviationCent', 'timeToHitMs', 'success'];
-  const missing = required.filter(f => data[f] === undefined);
+  const required = ['userName', 'targetNote', 'targetPitch', 'achievedPitch', 'deviationHz', 'deviationCent', 'timeToHitMs', 'success'];
+  const missing = required.filter((f) => data[f] === undefined);
 
   if (missing.length) throw Object.assign(new Error(`Fehlende Felder: ${missing.join(', ')}`), { status: 400 });
   if (data.timeToHitMs < 0) throw Object.assign(new Error('timeToHitMs darf nicht negativ sein'), { status: 400 });
@@ -52,6 +51,6 @@ export const getStats = asyncHandler(async (req, res) => {
     todayAttempts: +s.today_attempts,
     successRate: total ? ((+s.successful / total) * 100).toFixed(1) : '0.0',
     avgDeviationCent: +s.avg_deviation_cent || 0,
-    avgTimeToHit: +s.avg_time_to_hit || 0
+    avgTimeToHit: +s.avg_time_to_hit || 0,
   });
 });
